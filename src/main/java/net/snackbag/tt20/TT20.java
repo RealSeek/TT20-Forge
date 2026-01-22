@@ -69,5 +69,4 @@ public class TT20 {
             ConfigCommand.register(event.getDispatcher());
         }
     }
-
 }
