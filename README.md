@@ -1,3 +1,6 @@
+# Archived????? what the helly??????????????
+Yes. We do architectury now. You can find everything in the Fabric repo. It's the main repo now. We're just cool like that. Yeah. Crazy. Yeah. Yes! Yes!!! Yses!!!!!!!!!
+
 [Looking for Fabric?](https://github.com/snackbag/TT20)
 
 # TT20 Forge
