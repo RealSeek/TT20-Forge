@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.snackbag.tt20.TT20;
-import net.snackbag.tt20.util.TPSCalculator;
+// TPSCalculator accessed via TT20.TPS_CALCULATOR
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(GameRules.class)
@@ -15,6 +15,6 @@ public abstract class GameRulesMixin {
     private int randomTickSpeedAcceleration(int original, @Local(argsOnly = true) GameRules.Key<GameRules.IntegerValue> rule) {
         if (!TT20.config.enabled() || !TT20.config.randomTickSpeedAcceleration()) return original;
         if (!(rule == GameRules.RULE_RANDOMTICKING)) return original;
-        return (int) (original * TPSCalculator.MAX_TPS / (float) TT20.TPS_CALCULATOR.getMostAccurateTPS());
+        return (int) (original * TT20.TPS_CALCULATOR.getCompensationFactor());
     }
 }

@@ -5,9 +5,11 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.PortalProcessor;
 import net.snackbag.tt20.TT20;
+import net.snackbag.tt20.util.DebtAccumulator;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(PortalProcessor.class)
@@ -15,12 +17,16 @@ public abstract class PortalProcessorMixin {
     @Shadow
     private int portalTime;
 
+    @Unique
+    private final DebtAccumulator tt20$portalDebt = new DebtAccumulator();
+
     @ModifyExpressionValue(method = "processPortalTeleportation", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/PortalProcessor;portalTime:I", opcode = Opcodes.GETFIELD))
     private int runMissedTicks(int original, @Local ServerLevel world) {
         if (!TT20.config.enabled() || !TT20.config.portalAcceleration()) return original;
         if (world.isClientSide()) return original;
 
-        portalTime = portalTime + TT20.TPS_CALCULATOR.applicableMissedTicks();
+        tt20$portalDebt.accumulate();
+        portalTime = portalTime + tt20$portalDebt.consumeWhole();
         return portalTime;
     }
 }

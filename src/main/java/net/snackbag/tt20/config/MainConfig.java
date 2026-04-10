@@ -14,6 +14,16 @@ public class MainConfig extends JSONConfiguration {
     private boolean randomTickSpeedAcceleration = true;
     private boolean serverWatchdog = true;
 
+    // New P1 features
+    private boolean itemCooldownAcceleration = true;
+    private boolean furnaceAcceleration = true;
+    private boolean attackCooldownAcceleration = true;
+    private boolean xpPickupAcceleration = true;
+
+    // Compensation limits
+    private double maxCompensationFactor = 4.0;
+    private int maxExtraTicksPerTick = 5;
+
     private boolean singlePlayerWarning = true;
     private boolean automaticUpdater = true;
 
@@ -34,6 +44,16 @@ public class MainConfig extends JSONConfiguration {
         putIfEmpty("time-acceleration", timeAcceleration);
         putIfEmpty("random-tickspeed-acceleration", randomTickSpeedAcceleration);
         putIfEmpty("automatic-updater", automaticUpdater);
+
+        // New P1 features
+        putIfEmpty("item-cooldown-acceleration", itemCooldownAcceleration);
+        putIfEmpty("furnace-acceleration", furnaceAcceleration);
+        putIfEmpty("attack-cooldown-acceleration", attackCooldownAcceleration);
+        putIfEmpty("xp-pickup-acceleration", xpPickupAcceleration);
+
+        // Compensation limits (stored as JSON numbers, not strings)
+        putIfEmpty("max-compensation-factor", maxCompensationFactor);
+        putIfEmpty("max-extra-ticks-per-tick", maxExtraTicksPerTick);
 
         save();
     }
@@ -56,6 +76,14 @@ public class MainConfig extends JSONConfiguration {
         this.timeAcceleration = getAsBooleanOrDefault("time-acceleration", timeAcceleration);
         this.randomTickSpeedAcceleration = getAsBooleanOrDefault("random-tickspeed-acceleration", randomTickSpeedAcceleration);
         this.automaticUpdater = getAsBooleanOrDefault("automatic-updater", automaticUpdater);
+
+        this.itemCooldownAcceleration = getAsBooleanOrDefault("item-cooldown-acceleration", itemCooldownAcceleration);
+        this.furnaceAcceleration = getAsBooleanOrDefault("furnace-acceleration", furnaceAcceleration);
+        this.attackCooldownAcceleration = getAsBooleanOrDefault("attack-cooldown-acceleration", attackCooldownAcceleration);
+        this.xpPickupAcceleration = getAsBooleanOrDefault("xp-pickup-acceleration", xpPickupAcceleration);
+
+        this.maxCompensationFactor = getAsDoubleOrDefault("max-compensation-factor", maxCompensationFactor);
+        this.maxExtraTicksPerTick = getAsIntOrDefault("max-extra-ticks-per-tick", maxExtraTicksPerTick);
     }
 
     public void enabled(boolean enabled) {
@@ -168,5 +196,49 @@ public class MainConfig extends JSONConfiguration {
 
     public boolean singlePlayerWarning() {
         return singlePlayerWarning;
+    }
+
+    // --- New P1 features ---
+
+    public boolean itemCooldownAcceleration() {
+        return itemCooldownAcceleration;
+    }
+
+    public void itemCooldownAcceleration(boolean enabled) {
+        put("item-cooldown-acceleration", enabled);
+    }
+
+    public boolean furnaceAcceleration() {
+        return furnaceAcceleration;
+    }
+
+    public void furnaceAcceleration(boolean enabled) {
+        put("furnace-acceleration", enabled);
+    }
+
+    public boolean attackCooldownAcceleration() {
+        return attackCooldownAcceleration;
+    }
+
+    public void attackCooldownAcceleration(boolean enabled) {
+        put("attack-cooldown-acceleration", enabled);
+    }
+
+    public boolean xpPickupAcceleration() {
+        return xpPickupAcceleration;
+    }
+
+    public void xpPickupAcceleration(boolean enabled) {
+        put("xp-pickup-acceleration", enabled);
+    }
+
+    // --- Compensation limits ---
+
+    public double maxCompensationFactor() {
+        return maxCompensationFactor;
+    }
+
+    public int maxExtraTicksPerTick() {
+        return maxExtraTicksPerTick;
     }
 }

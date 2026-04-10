@@ -104,8 +104,7 @@ dependencies {
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     annotationProcessor 'io.github.llamalad7:mixinextras-common:0.4.1'
 
-    implementation "net.snackbag.shit:shit:${project.shitlib_version}"
-    //include "net.snackbag.shit:shit:${project.shitlib_version}"
+    // ShitLib removed — HTTP logic replaced with java.net.HttpURLConnection
 }
 
 tasks.named('processResources', ProcessResources).configure {

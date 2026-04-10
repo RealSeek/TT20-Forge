@@ -2,12 +2,15 @@ package net.snackbag.tt20;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import net.snackbag.shit.web.WebRequest;
-import net.snackbag.shit.web.WebResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 public class ModUpdater {
     private final static URL updateUrl;
@@ -30,15 +33,22 @@ public class ModUpdater {
 
         TT20.LOGGER.info("(TT20) Checking for updates...");
 
-        WebResponse resp;
-
+        String responseBody;
         try {
-            resp = new WebRequest(updateUrl).get();
+            HttpURLConnection conn = (HttpURLConnection) updateUrl.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+
+            try (BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                responseBody = reader.lines().collect(Collectors.joining());
+            }
         } catch (IOException e) {
-            throw new RuntimeException("Failed to GET update info for TT20. URL: " + updateUrl);
+            throw new RuntimeException("Failed to GET update info for TT20. URL: " + updateUrl, e);
         }
 
-        JsonObject body = JsonParser.parseString(resp.content()).getAsJsonObject();
+        JsonObject body = JsonParser.parseString(responseBody).getAsJsonObject();
 
         boolean status = body.get("status").getAsBoolean();
 
@@ -67,22 +77,20 @@ public class ModUpdater {
     }
 
     public static boolean laterVersion(String[] newVer, String[] oldVer) {
-        int newVerMajor = Integer.valueOf(newVer[0]);
-        int newVerMinor = Integer.valueOf(newVer[1]);
-        int newVerPatch = Integer.valueOf(newVer[2]);
+        int newVerMajor = Integer.parseInt(newVer[0]);
+        int newVerMinor = Integer.parseInt(newVer[1]);
+        int newVerPatch = Integer.parseInt(newVer[2]);
 
-        int oldVerMajor = Integer.valueOf(oldVer[0]);
-        int oldVerMinor = Integer.valueOf(oldVer[1]);
-        int oldVerPatch = Integer.valueOf(oldVer[2]);
+        int oldVerMajor = Integer.parseInt(oldVer[0]);
+        int oldVerMinor = Integer.parseInt(oldVer[1]);
+        int oldVerPatch = Integer.parseInt(oldVer[2]);
 
-        if (newVerMajor > oldVerMajor) {
-            return true;
+        if (newVerMajor != oldVerMajor) {
+            return newVerMajor > oldVerMajor;
         }
-
-        if (newVerMinor > oldVerMinor) {
-            return true;
+        if (newVerMinor != oldVerMinor) {
+            return newVerMinor > oldVerMinor;
         }
-
         return newVerPatch > oldVerPatch;
     }
 }

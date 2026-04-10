@@ -47,13 +47,13 @@ public class MainCommand {
         source.sendSuccess(() -> Component.literal(
                 "§7TPS " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getTPS(), true) +
                         "§7 with average " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getAverageTPS(), true) +
-                        "§7 accurate " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getMostAccurateTPS(), true)
+                        "§7 smoothed " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getSmoothedTPS(), true)
         ), false);
         //?} else {
         /*source.sendSuccess(Component.literal(
                 "§7TPS " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getTPS(), true) +
                         "§7 with average " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getAverageTPS(), true) +
-                        "§7 accurate " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getMostAccurateTPS(), true)
+                        "§7 smoothed " + TPSUtil.colorizeTPS(TT20.TPS_CALCULATOR.getSmoothedTPS(), true)
         ), false);
         *///?}
 
@@ -115,45 +115,33 @@ public class MainCommand {
         source.sendSuccess(() -> Component.literal(
                 "§7Server watchdog: " + (TT20.config.serverWatchdog() ? "§aON" : "§cOFF")
         ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§7Item cooldown acceleration: " + (TT20.config.itemCooldownAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§7Furnace acceleration: " + (TT20.config.furnaceAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§7Attack cooldown acceleration: " + (TT20.config.attackCooldownAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§7XP pickup acceleration: " + (TT20.config.xpPickupAcceleration() ? "§aON" : "§cOFF")
+        ), false);
         //?} else {
         /*source.sendSuccess(Component.literal(
-                "§7TT20 enabled: " + (TT20.config.enabled() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Block entity acceleration: " + (TT20.config.blockEntityAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Block breaking acceleration: " + (TT20.config.blockBreakingAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Potion effect acceleration: " + (TT20.config.potionEffectAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Fluid acceleration: " + (TT20.config.fluidAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Pickup acceleration: " + (TT20.config.pickupAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Eating acceleration: " + (TT20.config.eatingAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Portal acceleration: " + (TT20.config.portalAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Sleeping acceleration: " + (TT20.config.sleepingAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Time acceleration: " + (TT20.config.timeAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Random tickspeed acceleration: " + (TT20.config.randomTickSpeedAcceleration() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
-                "§7Singleplayer warning: " + (TT20.config.singlePlayerWarning() ? "§aON" : "§cOFF")
-        ), false);
-        source.sendSuccess(Component.literal(
                 "§7Server watchdog: " + (TT20.config.serverWatchdog() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§7Item cooldown acceleration: " + (TT20.config.itemCooldownAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§7Furnace acceleration: " + (TT20.config.furnaceAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§7Attack cooldown acceleration: " + (TT20.config.attackCooldownAcceleration() ? "§aON" : "§cOFF")
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§7XP pickup acceleration: " + (TT20.config.xpPickupAcceleration() ? "§aON" : "§cOFF")
         ), false);
         *///?}
 
@@ -170,6 +158,15 @@ public class MainCommand {
                 "§8Missed ticks: §7" + TPSUtil.formatMissedTicks(TT20.TPS_CALCULATOR.getAllMissedTicks())
         ), false);
         source.sendSuccess(() -> Component.literal(
+                "§8Compensation factor: §7" + TPSUtil.formatTPS(TT20.TPS_CALCULATOR.getCompensationFactor()) + "x"
+        ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§8Duration scale: §7" + TPSUtil.formatTPS(TT20.TPS_CALCULATOR.getScalingFactor()) + "x"
+        ), false);
+        source.sendSuccess(() -> Component.literal(
+                "§8Max compensation: §7" + TPSUtil.formatTPS(TT20.config.maxCompensationFactor()) + "x §8| Max extra ticks: §7" + TT20.config.maxExtraTicksPerTick()
+        ), false);
+        source.sendSuccess(() -> Component.literal(
                 "§8Automatic updater: §7" + (TT20.config.automaticUpdater() ? "§aenabled" : "§cdisabled")
         ), false);
         //?} else {
@@ -181,6 +178,15 @@ public class MainCommand {
         ), false);
         source.sendSuccess(Component.literal(
                 "§8Missed ticks: §7" + TPSUtil.formatMissedTicks(TT20.TPS_CALCULATOR.getAllMissedTicks())
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§8Compensation factor: §7" + TPSUtil.formatTPS(TT20.TPS_CALCULATOR.getCompensationFactor()) + "x"
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§8Duration scale: §7" + TPSUtil.formatTPS(TT20.TPS_CALCULATOR.getScalingFactor()) + "x"
+        ), false);
+        source.sendSuccess(Component.literal(
+                "§8Max compensation: §7" + TPSUtil.formatTPS(TT20.config.maxCompensationFactor()) + "x §8| Max extra ticks: §7" + TT20.config.maxExtraTicksPerTick()
         ), false);
         source.sendSuccess(Component.literal(
                 "§8Automatic updater: §7" + (TT20.config.automaticUpdater() ? "§aenabled" : "§cdisabled")

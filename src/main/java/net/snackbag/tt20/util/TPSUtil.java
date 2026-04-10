@@ -10,6 +10,9 @@ public class TPSUtil {
     private static final DecimalFormat df = new DecimalFormat("0.00", DecimalFormatSymbols.getInstance(Locale.ROOT));
     private static final DecimalFormat dfMissedTicks = new DecimalFormat("0.0000", DecimalFormatSymbols.getInstance(Locale.ROOT));
 
+    // Minimum effective TPS to prevent extreme compensation values
+    private static final double MIN_EFFECTIVE_TPS = 1.0;
+
     public static String colorizeTPS(double tps, boolean format) {
         if (tps > 15) {
             return "§a" + (format ? formatTPS(tps) : tps);
@@ -28,28 +31,36 @@ public class TPSUtil {
         return dfMissedTicks.format(missedTicks);
     }
 
+    /**
+     * Scales a duration (in ticks) by the current TPS ratio.
+     * Lower TPS = shorter duration = faster action for the player.
+     */
     public static float tt20(float ticks, boolean limitZero) {
         float newTicks = (float) rawTT20(ticks);
-
         if (limitZero) return newTicks > 0 ? newTicks : 1;
         else return newTicks;
     }
 
     public static int tt20(int ticks, boolean limitZero) {
         int newTicks = (int) Math.ceil(rawTT20(ticks));
-
         if (limitZero) return newTicks > 0 ? newTicks : 1;
         else return newTicks;
     }
 
     public static double tt20(double ticks, boolean limitZero) {
-        double newTicks = (double) rawTT20(ticks);
-
+        double newTicks = rawTT20(ticks);
         if (limitZero) return newTicks > 0 ? newTicks : 1;
         else return newTicks;
     }
 
+    /**
+     * Core TT20 formula: ticks * (smoothedTPS / 20).
+     * Reduces tick durations proportionally to TPS drop.
+     * Clamped to prevent extreme values at very low TPS.
+     */
     public static double rawTT20(double ticks) {
-        return ticks == 0 ? 0 : ticks * TT20.TPS_CALCULATOR.getMostAccurateTPS() / TPSCalculator.MAX_TPS;
+        if (ticks == 0) return 0;
+        double tps = Math.max(MIN_EFFECTIVE_TPS, TT20.TPS_CALCULATOR.getSmoothedTPS());
+        return ticks * tps / TPSCalculator.MAX_TPS;
     }
 }

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "refmap.tt20.json",
   "mixins": [
+    "AttackCooldownMixin",
     "DedicatedServerWatchdogMixin",
     "LivingEntityMixin",
     "PlayerMixin",
@@ -13,9 +14,13 @@
     "ServerPlayerListMixin",
     "fluid.LavaFluidMixin",
     "fluid.WaterFluidMixin",
+    "item.ExperienceOrbMixin",
+    "item.ItemCooldownsMixin",
     "item.ItemEntityMixin",
     "item.ItemMixin",
+    "world.AbstractFurnaceMixin",
     "world.BlockMixin",
+    "world.BrewingStandMixin",
     "world.GameRulesMixin",
     "world.LevelChunkMixin",
     "world.ServerLevelMixin"

@@ -134,6 +134,14 @@ public class JSONConfiguration {
         current.addProperty((String) values[1], value);
     }
 
+    public void put(String key, @Nullable Number value) {
+        Object[] values = preparePut(key, value);
+        if (values == null) return;
+
+        JsonObject current = (JsonObject) values[0];
+        current.addProperty((String) values[1], value);
+    }
+
     public void putIfEmpty(String key, @NotNull String value) {
         Objects.requireNonNull(value);
 
@@ -151,6 +159,14 @@ public class JSONConfiguration {
     }
 
     public void putIfEmpty(String key, @NotNull Boolean value) {
+        Objects.requireNonNull(value);
+
+        if (!has(key)) {
+            put(key, value);
+        }
+    }
+
+    public void putIfEmpty(String key, @NotNull Number value) {
         Objects.requireNonNull(value);
 
         if (!has(key)) {
@@ -201,6 +217,31 @@ public class JSONConfiguration {
         return element != null && element.isJsonArray()
                 ? element.getAsJsonArray()
                 : null;
+    }
+
+    public Number getAsNumber(String key) {
+        JsonElement element = json;
+
+        for (String part : splitKey(key)) {
+            if (element == null || !element.getAsJsonObject().has(part)) {
+                return null;
+            }
+            element = element.getAsJsonObject().get(part);
+        }
+
+        return element != null && element.isJsonPrimitive() && element.getAsJsonPrimitive().isNumber()
+                ? element.getAsNumber()
+                : null;
+    }
+
+    public double getAsDoubleOrDefault(String key, double def) {
+        Number num = getAsNumber(key);
+        return num != null ? num.doubleValue() : def;
+    }
+
+    public int getAsIntOrDefault(String key, int def) {
+        Number num = getAsNumber(key);
+        return num != null ? num.intValue() : def;
     }
 
     public String getAsStringOrDefault(String key, String def) {

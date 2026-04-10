@@ -3,8 +3,10 @@ package net.snackbag.tt20.mixin.item;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.snackbag.tt20.TT20;
+import net.snackbag.tt20.util.DebtAccumulator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -13,6 +15,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ItemEntityMixin {
     @Shadow
     private int pickupDelay;
+
+    @Unique
+    private final DebtAccumulator tt20$pickupDebt = new DebtAccumulator();
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void pickupDelayTT20(CallbackInfo ci) {
@@ -24,11 +29,8 @@ public abstract class ItemEntityMixin {
         *///?}
         if (pickupDelay == 0) return;
 
-        if (pickupDelay - TT20.TPS_CALCULATOR.applicableMissedTicks() <= 0) {
-            pickupDelay = 0;
-            return;
-        }
-
-        pickupDelay = pickupDelay - TT20.TPS_CALCULATOR.applicableMissedTicks();
+        tt20$pickupDebt.accumulate();
+        int reduction = tt20$pickupDebt.consumeWhole();
+        pickupDelay = Math.max(0, pickupDelay - reduction);
     }
 }

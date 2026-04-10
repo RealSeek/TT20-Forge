@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.snackbag.tt20.TT20;
+import net.snackbag.tt20.util.DebtAccumulator;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -15,6 +16,9 @@ import net.snackbag.tt20.util.TPSUtil;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin {
+    @Unique
+    private final DebtAccumulator tt20$sleepDebt = new DebtAccumulator();
+
     @Unique
     private boolean isClient(Entity entity) {
         //? if >=1.20.1 {
@@ -42,10 +46,8 @@ public abstract class PlayerMixin {
         //?} else {
         /*if (((Entity) (Object) this).getLevel().isClientSide()) return original;
         *///?}
-        /*Player self = (Player)(Object)this;
-        if (self.isSleeping()) {*/
-        return original + TT20.TPS_CALCULATOR.applicableMissedTicks();
-        /*}
-        return original;*/
+
+        tt20$sleepDebt.accumulate();
+        return original + tt20$sleepDebt.consumeWhole();
     }
 }
